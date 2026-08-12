@@ -1,3 +1,27 @@
-body {
-    margin: 0;
+div {
+    width: 200px;
+    height: 200px;
+    position: absolute;
+}
+
+#top {
+    background-color: red;
+    border: 10px solid black;
+    padding: 20px;
+    top: 100px;
+    left: 50px;
+}
+
+#mid {
+    background-color: blue;
+    border: 20px solid black;
+    top: 350px;
+    left: 300px;
+}
+
+#bot {
+    background-color: green;
+    border: 10px solid black;
+    top: 580px;
+    left: 530px;
 }

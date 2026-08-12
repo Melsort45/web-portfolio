@@ -1,0 +1,67 @@
+div {
+    position: absolute;
+    border: 10px solid black;
+}
+
+/* Red */
+#red {
+    background-color: red;
+    width: 300px;
+    height: 250px;
+    top: 100px;
+    left: 50px;
+}
+
+/* White */
+#white1 {
+    background-color: white;
+    width: 250px;
+    height: 150px;
+    top: 100px;
+    left: 370px;
+}
+
+/* Yellow */
+#yellow {
+    background-color: yellow;
+    width: 180px;
+    height: 150px;
+    top: 100px;
+    left: 640px;
+}
+
+/* Blue */
+#blue {
+    background-color: blue;
+    width: 180px;
+    height: 200px;
+    top: 370px;
+    left: 50px;
+}
+
+/* White */
+#white2 {
+    background-color: white;
+    width: 250px;
+    height: 200px;
+    top: 370px;
+    left: 250px;
+}
+
+/* White */
+#white3 {
+    background-color: white;
+    width: 250px;
+    height: 200px;
+    top: 370px;
+    left: 520px;
+}
+
+/* Red */
+#red2 {
+    background-color: red;
+    width: 100px;
+    height: 200px;
+    top: 370px;
+    left: 790px;
+}
