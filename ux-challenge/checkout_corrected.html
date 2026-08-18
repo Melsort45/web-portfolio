@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SustainCart - Secure Checkout</title>
+    <link rel="stylesheet" href="style_corrected.css">
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h2>Secure Checkout</h2>
+        </div>
+
+        <div class="cart-summary">
+            <div class="item-row">
+                <span class="item-title">SDG Eco-friendly Water Bottle</span>
+                <span class="item-price">$24.99</span>
+            </div>
+
+            <div class="item-row" style="font-size: 0.8rem; color: #868e96;">
+                <span>Subtotal:</span>
+                <span>$24.99</span>
+            </div>
+        </div>
+
+        <form action="#" method="POST" id="checkout-form">
+
+            <div class="optional-add-on">
+                <input type="checkbox" name="vip_warranty" id="vip_warranty" style="margin-top: 4px; margin-right: 10px;">
+                <!--Preselection, the user is by default already opted into the VIP Warranty-->
+
+                <div class="add-on-text">
+                    <!--Disquised/forced subscription subscription is vaguely stated-->
+                    <label for="vip_warranty" class="add-on-label">
+                        Add VIP Carbon-Offset Protection Plan
+                    </label>
+
+                    Protects your shipment and offsets delivery emissions.
+                    Adds <strong>$4.99/month</strong> as a recurring subscription charge.
+                    You can cancel this subscription at any time from your account.
+                    
+                    <!--sneak into basket: -->
+                </div>
+            </div>
+
+            <div class="shipping-selector">
+                <span class="shipping-label">Choose Delivery Speed:</span>
+
+                <div class="shipping-options">
+
+                    <label class="shipping-box-express">
+                        <div>
+                            <input type="radio" name="shipping_speed" value="express" style="margin-right: 8px;">
+                            <!--Visual/linguistic manipulation of shipping: the more expensive option is presented as the best-->
+                            <strong>Ultra-Fast Shipping</strong>
+                        </div>
+                        <span>$14.99</span>
+                    </label>
+
+                    <label class="shipping-box-standard">
+                        <div>
+                            <input type="radio" name="shipping_speed" value="standard" checked style="margin-right: 8px;">
+                            <span>Standard Shipping</span>
+                        </div>
+                        <span>$2.99</span>
+                    </label>
+
+                </div>
+            </div>
+
+            <div class="confirmshame-container">
+                <input type="checkbox" name="tree_donation" id="tree_donation">
+                <!--Confirmshaming, makes the user feel guilty if they dont check the box-->
+
+                <label for="tree_donation">
+                    Add $1.00 donation to plant 1 tree.
+                </label>
+            </div>
+
+            <div class="newsletter-optout">
+                <!--Trick wording: its written on a confusing way-->
+
+                <input type="checkbox" name="marketing_opt_in" id="marketing_opt_in">
+
+                <label for="marketing_opt_in">
+                    Subscribe to weekly partner offers and marketing notifications.
+                </label>
+            </div>
+
+            <!--Roach motel, makes it hard for users to cancel their subscription-->
+
+            <div class="roach-motel-notice">
+                VIP Protection is optional. If you subscribe, you can cancel your
+                recurring subscription at any time from your account settings.
+            </div>
+
+            <div class="checkout-actions">
+
+                <!--Bait and switch or misleading info makes the user think they are paying 24.99 only, but the real price is much higher-->
+
+                <div class="item-row">
+                    <strong>Total:</strong>
+                    <strong id="total-price">$27.98</strong>
+                </div>
+
+                <!--Hidden fees-->
+
+                <div style="font-size: 0.8rem; color: #868e96; text-align: center; margin-top: 10px;">
+                    No additional processing fees or hidden charges will be added at checkout.
+                </div>
+
+                <button type="submit" class="btn-checkout">
+                    Confirm Order & Pay <span id="button-total">$27.98</span>
+                </button>
+
+            </div>
+
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('checkout-form').addEventListener('submit', function(event) {
+            // Prevent the form from submitting and refreshing the page
+            event.preventDefault();
+
+            const baseProductPrice = 24.99;
+
+            const vipChecked = document.getElementById('vip_warranty').checked;
+            const vipPrice = vipChecked ? 4.99 : 0.00; //add the product into the basket sneakyly
+
+            const selectedShippingInput = document.querySelector('input[name="shipping_speed"]:checked');
+            const shippingSpeed = selectedShippingInput ? selectedShippingInput.value : 'none';
+
+            const shippingPrice = shippingSpeed === 'express' ? 14.99 : 2.99;
+
+            const treeChecked = document.getElementById('tree_donation').checked;
+            const treePrice = treeChecked ? 1.00 : 0.00;
+
+            const hiddenProcessingFee = 0.00;
+
+            // Compute actual total
+            const actualTotal = baseProductPrice + vipPrice + shippingPrice + treePrice + hiddenProcessingFee;
+
+            // Format breakdown report
+            const alertReport = 
+                "ORDER CONFIRMED!\n\n" +
+                "Your order total is clearly displayed before payment:\n\n" +
+                `  • Base Product (Eco Bottle): $${baseProductPrice.toFixed(2)}\n` +
+                `  • VIP Protection:            $${vipPrice.toFixed(2)}\n` +
+                `  • Shipping:                  $${shippingPrice.toFixed(2)} (${shippingSpeed.toUpperCase()})\n` +
+                `  • Tree Donation:             $${treePrice.toFixed(2)}\n` +
+                `  • Processing Fee:            $${hiddenProcessingFee.toFixed(2)}\n\n` +
+                "  -----------------------------------------------\n" +
+                `  💰 TOTAL CHARGE:             $${actualTotal.toFixed(2)}\n\n` +
+                "No hidden charges or misleading options were used.";
+
+            // Display warning to student
+            alert(alertReport);
+        });
+
+
+        // Update the visible total whenever the user changes an option
+        function updateTotal() {
+
+            const baseProductPrice = 24.99;
+
+            const vipChecked = document.getElementById('vip_warranty').checked;
+            const vipPrice = vipChecked ? 4.99 : 0.00;
+
+            const selectedShippingInput = document.querySelector('input[name="shipping_speed"]:checked');
+            const shippingPrice = selectedShippingInput && selectedShippingInput.value === 'express'
+                ? 14.99
+                : 2.99;
+
+            const treeChecked = document.getElementById('tree_donation').checked;
+            const treePrice = treeChecked ? 1.00 : 0.00;
+
+            const actualTotal = baseProductPrice + vipPrice + shippingPrice + treePrice;
+
+            document.getElementById('total-price').textContent =
+                `$${actualTotal.toFixed(2)}`;
+
+            document.getElementById('button-total').textContent =
+                `$${actualTotal.toFixed(2)}`;
+        }
+
+
+        document.getElementById('vip_warranty').addEventListener('change', updateTotal);
+        document.getElementById('tree_donation').addEventListener('change', updateTotal);
+
+        document.querySelectorAll('input[name="shipping_speed"]').forEach(function(input) {
+            input.addEventListener('change', updateTotal);
+        });
+
+        updateTotal();
+    </script>
+
+</body>
+</html>
