@@ -22,10 +22,11 @@ const multiply = (a, b) => a * b;
 
 // TODO: Write "divide" callback expression (a, b) => ...
 const divide = (a, b) => {
-    if (b === 0) {
-        throw new Error("Division by zero is not allowed.");
+    try {
+        return a / b;
+    } catch (error) {
+        return -1;
     }
-    return a / b;
 };
 
 // ==========================================
@@ -55,36 +56,60 @@ const calculator = (numA, numB, callback) => {
 };
 
 
+const calculadora = (numA, numB, callback) => {
+    return callback(numA, numB);
+ }
+
+
 // ==========================================
 // 4. TODO: EVENT OBSERVER & INTEGRATION WIRING (Students write this)
 // ==========================================
 calculateBtn.addEventListener('click', () => {
-    alert('click');
-    // TODO: Extract values from the inputs and parse them as floats.
-    const valA = parseFloat(num1Input.value);
-    const valB = parseFloat(num2Input.value);
-
-    // TODO: Retrieve the selected operation string value.
-    const selectedOperation = operationSelect.value;
-
-    // TODO: Match the selected operation string to its corresponding function reference.
-    let chosenCallback = null;
-    if (selectedOperation === 'add') chosenCallback = add;
-    else if (selectedOperation === 'subtract') chosenCallback = subtract;
-    else if (selectedOperation === 'multiply') chosenCallback = multiply;
-    else if (selectedOperation === 'divide') chosenCallback = divide;
-
-    // TODO: Execute the higher-order 'calculator' function with input values and the matched function reference.
-    resultStatus.classList.remove('alert-secondary', 'alert-danger', 'alert-success');
-    const result = calculator(valA, valB, chosenCallback);
     
-    // TODO: Update resultStatus text, toggling classes (e.g., alert-success vs alert-danger) based on outcomes!
-    if (typeof result === 'string' && (result.startsWith('Error') || result.includes('cero'))) {
-        resultStatus.classList.add('alert-danger');
-        resultStatus.textContent = result;
-    } else {
-        resultStatus.classList.add('alert-success');
+    try{
+            // TODO: Extract values from the inputs and parse them as floats.
+        const valA = parseFloat(num1Input.value);
+        const valB = parseFloat(num2Input.value);
+
+        // TODO: Retrieve the selected operation string value.
+        const selectedOperation = operationSelect.value;
+        if (num1Input.value === '' || num2Input.value === '') {
+            throw new Error('Error: Los valores ingresados deben ser números válidos.');
+        }
+        if (!selectedOperation){
+            throw new Error('Error: Debe seleccionar una operación válida.');
+        }
+
+        let targetCallback; 
+
+        switch (selectedOperation) {
+            case 'add':
+                targetCallback = add;
+                break;
+            case 'subtract':
+                targetCallback = substract;
+                break;
+            case 'multiply':
+                targetCallback = multiply;
+                break;
+            case 'divide':
+                targetCallback = divide;
+                break;
+            default:
+                throw new Error('Error: Debe seleccionar una operación válida.');
+        }
+
+        const result = calculator(valA, valB, targetCallback);
+        
+        resultStatus.className = 'alert alert-success text-center';
         resultStatus.textContent = `Resultado: ${result}`;
+    } catch (error) {
+        resultStatus.className = 'alert alert-danger text-center';
+        resultStatus.textContent = `Error: ${error.message}`;
     }
+
+    
+    // TODO: Match the selected operation string to its corresponding function reference.
+    // TODO: Execute the higher-order 'calculator' function with input values and the matched function reference.
 
 });
