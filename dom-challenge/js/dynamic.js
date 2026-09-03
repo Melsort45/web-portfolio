@@ -60,8 +60,8 @@ const updateCounter = () => {
     // Calculate total children nodes inside actionList
     // and update cardCounter display.
     const total = actionList.children.length;
-
-    cardCounter.textContent = `Total: ${total} Items`;
+    const completed = actionList.querySelectorAll('.completed').length;
+    cardCounter.textContent = `Total: ${total} Items, Completed: ${completed}`;
 };
 
 // ==========================================
@@ -113,7 +113,7 @@ actionList.addEventListener('click', (e) => {
 
         // Toggle complete class on currentCard
         currentCard.classList.toggle('completed');
-
+        updateCounter(); //llama otra vez la funcion al completar una task
     }
 
     else if (action === 'delete') {
