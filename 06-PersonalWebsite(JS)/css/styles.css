@@ -1,3 +1,175 @@
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Montserrat:ital,wght@0,400;0,600;0,700;1,400&family=Sacramento&display=swap');
+
+/* Base / Body Styles */
 body {
-  margin: 0;
+    background-color: #F8F9FA;
+    color: #333333;
+    font-family: 'Merriweather', serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+/* Typography & Headings */
+h1 {
+    font-family: 'Sacramento', cursive;
+    color: #66BFBF;
+    font-size: 5.5rem;
+    margin: 50px;
+}
+
+h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.5rem;
+    color: #11999E;
+    padding-bottom: 10px;
+}
+
+h3 {
+    font-family: 'Montserrat', sans-serif;
+    color: #30E3CA;
+}
+
+
+hr {
+    border-style: dotted none none none;
+    border-color: #EAF6F6;
+    border-width: 6px;
+    width: 4%;
+    margin: 100px auto;
+}
+
+
+a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #11999E;
+}
+
+a:hover {
+    color: #28a745; 
+}
+
+
+.logo, 
+ul img, 
+nav img {
+    max-width: 100px;
+    max-height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+
+.section {
+    padding: 40px 20px;
+}
+
+
+.section:nth-of-type(even) {
+    background-color: #EAF6F6;
+}
+
+
+.hero-header {
+    position: relative;
+    padding-top: 50px;
+    background-color: #EAF6F6;
+    overflow: hidden;
+}
+
+.cloud-sticky {
+    position: sticky;
+    top: 10px;
+    z-index: 10;
+    max-width: 120px;
+}
+
+.mountain-static {
+    position: relative;
+    display: block;
+    margin: 30px auto 0 auto;
+    max-width: 400px;
+}
+
+
+.team-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.team-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.1);
+    width: 280px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.team-card img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+
+form {
+    border: 3px dotted #11999E;
+    background-color: #EAF6F6;
+    padding: 30px;
+    max-width: 500px;
+    margin: 30px auto;
+    border-radius: 12px;
+    text-align: left;
+}
+
+form p {
+    margin-bottom: 15px;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="time"],
+input[type="color"],
+select,
+textarea {
+    background-color: #FFFFFF;
+    border: 1px solid #66BFBF;
+    border-radius: 15px; 
+    padding: 8px 12px;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+input[type="checkbox"] {
+    width: auto;
+}
+
+input[type="submit"] {
+    background-color: #11999E;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    width: 100%;
+}
+
+input[type="submit"]:hover {
+    background-color: #30E3CA;
+}
+
+
+ul, ol {
+    display: inline-block;
+    text-align: left;
 }
