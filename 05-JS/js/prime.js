@@ -6,25 +6,47 @@
 var getPrimeFactors = function (n) {
   "use strict";
 
-  function isPrime(n) {
-    var i;
-
-    for (i = 2; i <= Math.sqrt(n); i++) {
-      if (n % i === 0) {
-        return false;
-      }
-    }
-    return true;
+  //leer desde el html el input
+  if (n === undefined) {
+    var inputVal = document.getElementById("num").value;
+    n = parseInt(inputVal, 10);
   }
 
-  var i,
-    sequence = [];
+  var sequence = [];
 
-  //TODO: Check which numbers are factors of n and also check if
-  // that number also happens to be a prime
+  if (isNaN(n) || n < 2) {
+    if (document.getElementById("pf")) {
+      document.getElementById("pf").innerText = "Please enter a valid number >= 2";
+    }
+    return sequence;
+  }
+
+  //Si n es divisible entre 2, guardas 2 y divides n/2
+  while (n % 2 === 0) {
+    sequence.push(2);
+    n = n / 2;
+  }
+
+  //N debe ser impar, probar impares desde 3 hasta raiz de n 
+  for (var i = 3; i <= Math.sqrt(n); i += 2) {
+    while (n % i === 0) {
+      sequence.push(i);
+      n = n / i;
+    }
+  }
+
+  // Si n es un num primo mayor a 2 
+  if (n > 2) {
+    sequence.push(n);
+  }
+
+  
+  if (document.getElementById("pf")) {
+    document.getElementById("pf").innerText = "Prime Factors: " + sequence.join(", ");
+  }
 
   return sequence;
 };
 
-// the prime factors for this number are: [ 2, 3, 5, 7, 11, 13 ]
+//ej en consola
 console.log(getPrimeFactors(30030));

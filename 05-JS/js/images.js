@@ -61,11 +61,22 @@ function component(width, height, color, x, y, type) {
     this.x += this.speedX;
     this.y += this.speedY;
     if (this.type == "image") {
-      if (this.x >= canvasWidth - this.width / 2 || this.x <= 0) {
-        //TODO: make the image bounce back when reaching the edges
+      // Límites horizontales (Eje X)
+      if (this.x + this.width >= canvasWidth) {
+        this.x = canvasWidth - this.width;
+        this.speedX = -this.speedX; // Rebote
+      } else if (this.x <= 0) {
+        this.x = 0;
+        this.speedX = -this.speedX; // Rebote
       }
-      if (this.y >= canvasHeight - this.height / 2 || this.y <= 0) {
-        //TODO: make the image bounce back when reaching the edges
+
+      // Límites verticales (Eje Y)
+      if (this.y + this.height >= canvasHeight) {
+        this.y = canvasHeight - this.height;
+        this.speedY = -this.speedY; // Rebote
+      } else if (this.y <= 0) {
+        this.y = 0;
+        this.speedY = -this.speedY; // Rebote
       }
     }
   };
@@ -84,11 +95,11 @@ function moveup() {
 }
 
 function movedown() {
-  //TODO: implement the move down functionality
+  myGamePiece.speedY += 1;
 }
 
 function moveleft() {
-  //TODO: implement the move left functionality
+  myGamePiece.speedX -= 1;
 }
 
 function moveright() {
