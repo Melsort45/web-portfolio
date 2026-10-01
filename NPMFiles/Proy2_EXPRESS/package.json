@@ -1,0 +1,19 @@
+{
+  "name": "proy2_express",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "You are tasked with building the backend API engine for **SustainHub**, an environmental monitoring platform. The frontend team needs stateless server endpoints to query climate scientists, filter telemetry metrics by department, and register new environmental initiatives.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.20.0",
+    "express": "^5.2.1",
+    "nodemon": "^3.1.14"
+  }
+}

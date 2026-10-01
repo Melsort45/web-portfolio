@@ -3,7 +3,7 @@
 
 import os from 'os';
 import chalk from 'chalk';
-import fs from 'node:fs/promises';
+import fs from 'fs-extra';
 
 // index.js - Student Starter Skeleton
 // TODO 1: Import built-in Node modules (os, fs/promises, path)
@@ -18,8 +18,12 @@ async function generateTelemetryReport() {
         // ==========================================
         // TODO: Get CPU architecture, platform, free memory (in MB), and system uptime (in hours)
         const platform = os.platform();
-        const freeMemMB = "TODO";
-        const uptimeHours = "TODO";
+        const freeMemMB = (os.freemem() / (1024 * 1024)).toFixed(0); // Convert bytes to MB
+        const uptimeHours = os.uptime() / 3600; // Convert seconds to hours
+        const cpuModel = os.cpus()[0].model; // Get the model of the first CPU
+        const totalMemMB = (os.totalmem() / (1024 * 1024)).toFixed(0); // Total memory in MB
+        
+        //platform, total memory , used memory , cpu model, uptime.
 
         // ==========================================
         // 2. RENDER FORMATTED TERMINAL LOGS (Third-Party 'chalk')
@@ -30,15 +34,18 @@ async function generateTelemetryReport() {
         console.log("==========================================");
         // Print Platform, Free Memory, and Uptime with custom colors
         console.log(`${chalk.bold("OS Platform:")}      ${chalk.yellow(platform)}`);
-
+        console.log(`${chalk.bold("Free Memory, MB:")}      ${chalk.yellow(freeMemMB)}`);
+        console.log(`${chalk.bold("System Uptime, Hours:")}      ${chalk.yellow(uptimeHours.toFixed(2))}`);
+        console.log(`${chalk.bold("CPU Model:")}      ${chalk.blue(cpuModel)}`);
+        console.log(`${chalk.bold("Total Memory, MB:")}      ${chalk.yellow(totalMemMB)}`);
 
         // ==========================================
         // 3. WRITE PERMANENT LOG FILE (Built-in 'fs/promises')
         // ==========================================
-        const logEntry = `[${new Date().toISOString()}] PLATFORM: ${platform} | FREEMEM: ${freeMemMB}MB`;
+        const logEntry = `[${new Date().toISOString()}] PLATFORM: ${platform} | FREEMEM: ${freeMemMB}MB\n`;
         
-        // TODO: Append logEntry to 'telemetry.log' using fs.appendFile()
         console.log("Writing log entry to disk...");
+        await fs.appendFile('telemetry.log', logEntry, 'utf-8');
 
         console.log("Telemetry audit completed successfully!");
 
