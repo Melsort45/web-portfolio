@@ -1,90 +1,180 @@
-import express from 'express'
-import axios from 'axios'
-import {getWeatherFrom} from './services/meteo-service.js'
+import express from "express";
+// const express = require('express'); old version
+// import axios from "axios";
+import weatherRoutes from "./routes/weatherRoutes.js";
+import { getWeatherfrom }from "./services/meteo-service.js";
+import { WeatherError, error } from "./services/weather-error.js";
 
-const app = express()
-app.use (express.json()); //middleware
+const app = express(); //when we call express we get an application
+app.use(express.json()); // Middleware, change the behaviour of the server; configure express server that whenever it recieves info to interpret it as a json
+//when you configure a server, it will get executed from top to bottom. Anything declared before this will not be prepared to handle json
 
+// Mock In-Memory Database
 const scientists = [
     { id: 1, name: "Dr. Elena Rostova", department: "Climate", projects: 4 },
     { id: 2, name: "Prof. Marcus Vance", department: "Oceanography", projects: 2 },
     { id: 3, name: "Dr. Aisha Khan", department: "Climate", projects: 7 }
 ];
 
-const initiatives = []; 
+const initiatives = [];
 
-app.get('/api/scientists', (req, res) => {
-  const { dept } = req.query;
-  if (dept){
-    const result = scientists.filter((scientist) => scientist.department.toLowerCase() === dept.toLowerCase());
-    
+const protect = (req, res, next) => {
+  const { token } = req.headers;
+  if(!token || token !== "my-secret-token") {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  next();
+}
+
+
+app.get("/", (req, res) => { //this callback func will alaways recieve two varaible: request and response
+  res.send(`
+        <div style="font-family: sans-serif; padding: 20px;">
+            <h1> SustainHub Decoupled REST API</h1>
+            <p>Status: <span style="color: green; font-weight: bold;">ONLINE</span></p>
+            <p>Available JSON endpoints: <code>/api/scientists</code>, <code>/api/initiatives</code></p>
+        </div>
+    `);
+});
+
+
+//http://localhost:port/greet?name=Valeria&city=Guadalajara
+app.get("/greet", (req, res) => {
+  const { name, city } = req.query;
+  res.send(`Hello ${name}, how is the weather in ${city}`);
+});
+
+// /api/scientists?dept=***
+app.get("/api/scientists", (req, res) => {
+  const { dept } = req.query; // this way of getting info is called destructuring
+  if(dept) {
+    const result = scientists.filter(
+      (scientist) => scientist.department.toLowerCase() === dept.toLowerCase(), 
+    );
     if(result && result.length > 0){
-        return res.json({ 
-          deptScientists: result,
-          dept,
-          count: result.length
-        });
+      return res.json({
+        deptScientists: result,
+        dept, 
+        count: result.length,
+      });
     } else {
-        return res.json({ errorMsg: `No results for department ${dept}`,dept });
+      return res.json({ errorMsg:  `No results for the department ${dept}`, dept });
     }
   }
-  return res.json({ deptScientists: scientists, count: scientists.length });
-})
+  res.json({ deptScientists: scientists, count: scientists.length });
+});
 
-app.get('/api/scientists/:id/profile/:keyword', (req, res) => {
-  const scientistId = parseint(req.params.id, 10);
+// /api/scientists/:id
+app.get("/api/scientists/:id/profile/:keyword", (req, res) => {
+  const scientistId = parseInt(req.params.id, 10);
   const { keyword } = req.params;
-
-  const scientist = scientists.find((scientist) => scientist.id === scientistId); 
-  if (!scientist) {
-    return res.json({ success: false, errorMsg: "No scientist found" });
+  const scientist = scientists.find((s) => s.id === scientistId);
+  if(!scientist){
+    return res.json({ success: false, errorMsg: "No scientist found." });
   }
-  res.json({ 
-    success: true,
-    data: scientist, 
+  res.json({
+    success: true, 
+    data: scientist,
     keyword,
   });
+});
 
-})
+app.get("/api/initiatives", (req, res) => {
+  res.json({ initiatives, status: "Ok" });
+});
 
-app.post('/api/initiatives', (req, res) => {
+app.post("/api/initiatives", (req, res) => {
   const { title, budget, department } = req.body;
   const initiative = { title, budget, department };
   initiatives.push(initiative);
-  res.json({title, budget, department, status: "OK"});
-})
+  res.json({ title, budget, department, status: "Ok" });
+});
 
-app.get('/api/initiatives', (req, res) => {
-  res.json({initiatives, status: "OK"});
-})
+//same endpoint, listening to the same method. 
+//this method will access the info the previous get/about one gave
 
-app.get('/weatherGDL', async (req, res) => {
-  const respString = await getWeatherFrom(20.6597, -103.349, "Guadalajara");
+app.get("/about", 
+  (req, res, next) => {
+    req._internalMsg = "This is my WebApp class project.";
+    //instead of calling next(), if res.send(`Second endpoint...) is called here, the next method will not be executed.
+    next();
+  }, 
+  (req, res, next) => {
+    res.send(`Second endpoint. ${req._internalMsg}`); 
+  }
+); //chaining the endpoints, i do something in a mtheod and i keep pushing forward, and someone else (another method) down the road will continue the work. This is called middleware chaining. The next() function is used to pass control to the next middleware function in the stack.
+
+app.post("/about", (req, res) => {
+  res.send('This is still my WebApp class project, but secure.');
+});
+
+/* this was all moved to routes
+app.get("/weatherGDL", async (req, res) => {
+  const respString = await getWeatherfrom(20.6597, -103.349, "Guadalajara");
   res.send(respString);
-})
+  /* before meteo-service.js: 
+  const apiUrl = "https://api.open-meteo.com/v1/forecast?latitude=20.6597&longitude=-103.349&current_weather=true";
+  const response = await axios(apiUrl);
+  const currentWeather = response.data;
+  console.log(currentWeather); 
+  res.send(`In Guadalajara, the current temps is ${currentWeather.current_weather.temperature} C`); 
 
-app.get('/weatherLSN', async (req, res) => {
-  const respString = await getWeatherFrom(46.52, 6.63, "Lausanne");
+});
+
+app.get("/weatherLSN", async (req, res) => {
+  const respString = await getWeatherfrom(46.52, 6.63, "Lausanne");
   res.send(respString);
-})
 
-app.get('/', (req, res) => {  
-  res.send('Hello World, aqui podemos poner el html...')
-})
+});
 
-app.get('/about', (req, res) => {
-  res.send('hola get jeje')
-})
+const cities = {
+  GDL: { lat: 20.6597, long: -103.349 },
+  LSN: { lat: 46.52, long: 6.63 },
+};
 
-app.get('/greet', (req, res) => {
-    const { name , city } = req.query
-    res.send(`Hello, ${name} from ${city}!`)
-    })
+//try catch way
+/*app.get("/weather/:city", async (req, res) => { //we need to think defensively when programming 
+  try{
+    const { city } = req.params;
+    if(!city) throw new Error("City code is required");
+    if(!cities[city]) throw new Error("City code is not valid");
+    const { lat, long, name } = cities[city];
 
-app.post('/about', (req, res) => {
-  res.send('hola post jeje')
-})
+    const respString = await getWeatherfrom(lat, long, name);
+    res.send(respString);
+  } catch (error) {
+    console.error(error);
+    if(error.message === "City code is required") {
+      res.status(400).send({ error: "City code is required" });
+    }
+    res.status(500).send({ error: "Unknown error" });
+  }
 
+}); 
+
+//with next, we do not use try-catch 
+app.get("/weather/:city", async (req, res, next) => { //we need to think defensively when programming 
+    const { city } = req.params;
+    if(!city) 
+      next(new WeatherError("City code is required", 400, "/weather/:city")); //before WeatherError we used Error
+    if(!cities[city]) 
+      next(new WeatherError("City code is not valid", 400, "/weather/:city"));
+    const { lat, long, name } = cities[city];
+    const respString = await getWeatherfrom(lat, long, name);
+    res.send(respString);
+});
+*/
+
+
+app.use("/api/weather", protect, weatherRoutes); //this is the route that will handle all the weather endpoints
+
+app.all("/{*splat}", (req, res, next) => {
+  next(new Error("Endpoint not found"));
+});
+
+app.use(errorMiddleware);
+
+        //which is the port that this server will be listening to 
 app.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000')
-})
+  console.log('Server is running on http://localhost:3000'); //port 3000
+});
