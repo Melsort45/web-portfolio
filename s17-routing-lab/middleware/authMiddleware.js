@@ -9,23 +9,24 @@ import { AppError } from '../utils/appError.js';
 //    - If token === 'sustain-admin-token', attach req.user = { id: 999, name: 'Prof. Gabriel', role: 'admin' }
 //    - Otherwise, pass next(new AppError('Unauthorized: Invalid or missing token', 401))
 export const protect = (req, res, next) => {
-// WRITE YOUR PROTECTION LOGIC HERE
+  // WRITE YOUR PROTECTION LOGIC HERE
   const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return next(new AppError("Unauthorized", 401));
-  }
-  
-  const token = authHeader.split(" ")[1];
 
-  if(token==='sustain-user-token') {
-    req.user = { id: 101, name: 'Elena (Researcher)', role: 'user' };
-    return next();
-  } else if(token==='sustain-admin-token') {
-    req.user = { id: 102, name: 'Prof. Gabriel (Admin)', role: 'admin' };
-    return next();
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return next(new AppError('Unauthorized: Invalid or missing token', 401));
   }
 
-  return next(new AppError("Unauthorized", 401));
+  const token = authHeader.split(' ')[1];
+
+  if (token === 'sustain-user-token') {
+    req.user = { id: 101, name: 'Elena', role: 'user' };
+    return next();
+  } else if (token === 'sustain-admin-token') {
+    req.user = { id: 999, name: 'Prof. Gabriel', role: 'admin' };
+    return next();
+  }
+
+  return next(new AppError('Unauthorized: Invalid or missing token', 401));
 };
 
 // TODO: Implement 'requireAdmin' middleware
@@ -33,10 +34,10 @@ export const protect = (req, res, next) => {
 // 2. If true, call next()
 // 3. Otherwise, pass next(new AppError('Forbidden: Admin privilege required for this action', 403))
 export const requireAdmin = (req, res, next) => {
-    // WRITE YOUR ADMIN CHECK LOGIC HERE
-    if (req.user && req.user.role === 'admin') {
-        next();
-    } else {
-        next(new AppError('Forbidden: Admin privilege required for this action', 403));
-    }
+  // WRITE YOUR ADMIN CHECK LOGIC HERE
+  if (req.user && req.user.role === 'admin') {
+    return next();
+  }
+  
+  next(new AppError('Forbidden: Admin privilege required for this action', 403));
 };

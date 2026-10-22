@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather report</title>
+  <meta charset="UTF-8">
+  <title>Weather App</title>
 </head>
-
 <body>
-    <form action="/" method="post">
-        <label for="cityName">City Name</label>
-        <input id="cityName" type="text" name="cityName">
-        <button type="submit">Go</button>
-    </form>
+  <h1>Weather App</h1>
+  
+  <form action="/" method="POST">
+    <label for="cityName">City Name:</label>
+    <input type="text" id="cityName" name="cityName" placeholder="e.g. London, Mexico City" required>
+    <button type="submit">Get Weather</button>
+  </form>
 </body>
-
 </html>

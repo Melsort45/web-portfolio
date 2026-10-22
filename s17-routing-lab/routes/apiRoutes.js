@@ -1,5 +1,5 @@
 import express from 'express';
-import { protect, requireAdmin } from '../middlewares/authMiddleware.js';
+import { protect, requireAdmin } from '../middleware/authMiddleware.js'; // Ajusta a '../middleware/authMiddleware.js' si tu carpeta es en singular
 import { AppError } from '../utils/appError.js';
 
 const router = express.Router();
@@ -32,14 +32,14 @@ router.route('/')
 // Chain .delete() -> protected + requireAdmin, deletes initiative by ID or 404
 router.route('/:id')
     .get(protect, (req, res, next) => {
-        const initiative = initiatives.find(i => i.id === parseInt(req.params.id));
+        const initiative = initiatives.find(i => i.id === parseInt(req.params.id, 10));
         if (!initiative) {
             return next(new AppError("Initiative not found", 404));
         }
         res.status(200).json({ status: 'success', data: initiative });
     })
     .delete(protect, requireAdmin, (req, res, next) => {
-        const initiativeIndex = initiatives.findIndex(i => i.id === parseInt(req.params.id));
+        const initiativeIndex = initiatives.findIndex(i => i.id === parseInt(req.params.id, 10));
         if (initiativeIndex === -1) {
             return next(new AppError("Initiative not found", 404));
         }

@@ -11,7 +11,8 @@ const PORT = 3000;
 app.use(express.json());
 
 // TODO: Serve static files from the 'public' directory so index.html loads on http://localhost:3000
-app.use(express.static('public'));
+// Si la carpeta se llama 'client', sirve 'client'. Si se llama 'public', usa 'public'.
+app.use(express.static('client')); 
 
 // TODO: Mount Routers
 // Mount authRoutes on '/api/auth'

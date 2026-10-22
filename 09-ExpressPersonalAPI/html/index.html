@@ -1,25 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Express test</title>
+  <meta charset="UTF-8">
+  <title>Express API</title>
 </head>
-
 <body>
-    <% if (locals.error) { %>
-        <h3>
-            <%= error %>
-        </h3>
+  <h1>Greetings App</h1>
+
+  
+  <form action="/greet" method="GET">
+    <input type="text" name="name" placeholder="Enter name" required>
+    <button type="submit">Greet</button>
+  </form>
+
+  
+  <% if (typeof error !== 'undefined' && error) { %>
+    <p style="color: red;"><strong>Error:</strong> <%= error %></p>
+  <% } %>
+
+  
+  <h2>Names List</h2>
+  <ul>
+    <% names.forEach((n, index) => { %>
+      <li>
+        <a href="/wazzup/<%= index %>"><%= n %></a>
+      </li>
+    <% }) %>
+  </ul>
+
+  <hr>
+
+  
+  <h2>TODO List</h2>
+
+  
+  <form action="/task" method="POST">
+    <input type="text" name="task" placeholder="New task..." required>
+    <button type="submit">Add Task</button>
+  </form>
+
+  
+  <ul>
+    <% tasks.forEach((task, index) => { %>
+      <li>
+        <%= task %>
+        
+        
+        <% if (index > 0) { %>
+          <a href="/task/move/up/<%= index %>">⬆️</a>
         <% } %>
-            <form action="/greet" method="get">
-                Register:
-                <input type="text" name="name" id="name" placeholder="Name">
-                <input type="submit" value="go next">
-            </form>
 
+        <% if (index < tasks.length - 1) { %>
+          <a href="/task/move/down/<%= index %>">⬇️</a>
+        <% } %>
+
+        
+        <a href="/task/delete/<%= index %>">❌ Delete</a>
+      </li>
+    <% }) %>
+  </ul>
 </body>
-
 </html>

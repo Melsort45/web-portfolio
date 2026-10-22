@@ -2,8 +2,20 @@ import express from "express";
 // const express = require('express'); old version
 // import axios from "axios";
 import weatherRoutes from "./routes/weatherRoutes.js";
-import { getWeatherfrom }from "./services/meteo-service.js";
+//import { getWeatherfrom }from "./services/meteo-service.js";
 import { WeatherError, error } from "./services/weather-error.js";
+import { errorMiddleware } from "./middlewares/error-middleware.js";
+import { connectDB } from "./config/db.js";
+import { createUser, findUser, findUsers } from "./services/user-service";
+
+import { loadEnvFile } from "node:process";
+loadEnvFile(); 
+const dbUser = process.env.DB_USER;
+const dbPassword = process.env.DB_PASSWORD;
+const dbName = 'Database01'; 
+
+const mongoUrl = `mongodb+srv://${dbUser}:${dbPassword}@cluster0.vkteaao.mongodb.net/${dbName}`;
+connectDB(mongoUrl); //connect to the database
 
 const app = express(); //when we call express we get an application
 app.use(express.json()); // Middleware, change the behaviour of the server; configure express server that whenever it recieves info to interpret it as a json
@@ -26,6 +38,23 @@ const protect = (req, res, next) => {
   next();
 }
 
+app.post("/users", async (req, res) => {
+  try {
+    const { username, name, email, password } = req.body;
+    if (!username || !name || !email || !password) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+    const existingUser = await findUser(username);
+    if (existingUser) {
+      return res.status(409).json({ error: "Username already exists" });
+    }
+    const newUser = await createUser({ username, name, email, password });
+    res.status(201).json(newUser);
+  } catch (error) {
+    console.error("Error in /users route:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 app.get("/", (req, res) => { //this callback func will alaways recieve two varaible: request and response
   res.send(`
